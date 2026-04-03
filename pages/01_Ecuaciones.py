@@ -22,7 +22,7 @@ st.write("Usa esta sección para encontrar raíces de funciones no lineales.")
 funcion = st.text_input("Función f(x):", "x**2 - 4")
 error_max = st.text_input("Escribe el erro maximo:","1e-6")
 
-metodo = st.selectbox("Selecciona el método:", ["Bisección", "Falsa Posicoin"])
+metodo = st.selectbox("Selecciona el método:", ["Bisección", "Falsa Posicoin", "Secante"])
 
 # 2. Lógica 
 if st.button("Calcular"):
@@ -31,7 +31,10 @@ if st.button("Calcular"):
         resultado = solucionador.biseccion(0,5)
         _mostrar_resultado(solver=solucionador)
         st.dataframe(pd.DataFrame(resultado))
-        
+    if metodo == "Secante":
+        resultado = solucionador.secante(0,5)
+        _mostrar_resultado(solver=solucionador)
+        st.dataframe(pd.DataFrame(resultado))
         
 
 

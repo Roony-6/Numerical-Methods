@@ -2,7 +2,7 @@ class SolucionadorRaices:
     def __init__(self, function, tol = 1e-6, max_iter=100):
         self.f = lambda x: eval(function)
         self.tol = tol
-        self.max_itier = max_iter
+        self.max_iter = max_iter
         
         #Resultados despues de la ejecucion
         self.raiz = None
@@ -22,7 +22,7 @@ class SolucionadorRaices:
             return historial
         c_anterior = None
         
-        for i in range (self.max_itier):
+        for i in range (self.max_iter):
             c_actual = (a + b) / 2
             fa = self.f(a)
             fb = self.f(b)
@@ -68,16 +68,53 @@ class SolucionadorRaices:
             self.raiz = c_actual
             self.convergio = False
             self.mensaje = (
-                f"Se alcanzó el máximo de {self.max_itier} iteraciones sin converger. "
+                f"Se alcanzó el máximo de {self.max_iter} iteraciones sin converger. "
                 f"Última aproximación: {c_anterior:.8f}"
             )
 
         return historial
             
-                
+    
+    def secante(self, p0: float, p1: float):
+        historial = []
+        
+        f0 = self.f(p0)
+        f1 = self.f(p1) 
+
+        for i in range(self.max_iter):
+        
+            if (f1 - f0) == 0:
+                self.mensaje = "Error: División por cero (f(p1) - f(p0) = 0)."
+                break
+
+            p2 = p1 - (f1 * (p1 - p0)) / (f1 - f0)
+
+
+            error_relativo = abs(p2 - p1)
+
+            fila = {
+                "iteraciones": i,
+                "p0": p0,
+                "p1": p1,
+                "aproximacion": p2,
+                "cota error": error_relativo
+            }
+            historial.append(fila)
+
+            if error_relativo < self.tol:
+                self.raiz = p2
+                self.convergio = True
+                self.mensaje = f"Convergió en {i} iteraciones (error = {error_relativo:.2e})."
+                break
             
-            
-        
-        
-        
-        
+            # 4. ACTUALIZACIÓN CRÍTICA
+            p0 = p1
+            f0 = f1 # Guardamos el valor actual para la siguiente vuelta
+            p1 = p2
+            f1 = self.f(p1) # Evaluamos el nuevo punto
+
+        else:
+            self.raiz = p1
+            self.convergio = False
+            self.mensaje = f"Se alcanzó el máximo de iteraciones sin converger."
+        return historial
