@@ -72,7 +72,7 @@ class SolucionadorRaices:
                 f"Última aproximación: {c_anterior:.8f}"
             )
 
-        return historial
+        return self.raiz,historial
             
     
     def secante(self, p0: float, p1: float):
@@ -117,4 +117,4 @@ class SolucionadorRaices:
             self.raiz = p1
             self.convergio = False
             self.mensaje = f"Se alcanzó el máximo de iteraciones sin converger."
-        return historial
+        return self.raiz,historial
