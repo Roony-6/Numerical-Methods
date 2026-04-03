@@ -2,7 +2,7 @@ import streamlit as st
 from src.interface import InterfaceHelper
 
 
-# 1. Configuración (Debe ser la primera línea de Streamlit)
+# 1. Configuración 
 st.set_page_config(
     page_title="Proyecto Metodos Numericos",
     page_icon="R",
@@ -12,7 +12,7 @@ st.set_page_config(
 # 2. Título y Bienvenida
 
 InterfaceHelper.encabezado_main("Proyecto Metodos Numericos", "Aplicacion para encontrar raices con metodos "
-                                "numericos iterarativos")
+                                "numericos iterarativos y mas")
 
 # 3. Información del Estudiante (Presentación)
 with st.sidebar:
@@ -29,7 +29,10 @@ with col1:
     
     **Secciones disponibles:**
     * **Raíces de Ecuaciones:** Bisección, Newton-Raphson, Secante,etc.
+    **Por desarrollar:**
     * **Interpolación:** Lagrange, Newton (Diferencias Divididas).
+    * **Aproximaciones** Polinomios por minimos cuadrados
+    * **Derivacion:** Derivacion numerica
     * **Integración:** Regla del Trapecio y Simpson.
     """)
     
@@ -37,7 +40,6 @@ with col1:
     #st.latex(r"f(x) = \sum_{i=0}^{n} y_i L_i(x)")
 
 #with col2:
-    # Puedes poner una imagen o un logo aquí
     #st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/1200px-Python-logo-notext.svg.png", width=150)
 
 st.success(" <- Selecciona un método en el menú de la izquierda para comenzar.")
