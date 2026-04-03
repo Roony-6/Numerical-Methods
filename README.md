@@ -52,7 +52,7 @@ Una vez activado el entorno (verás ```.venv``` en tu terminal), instala las lib
 pip install -r requirements.txt
 ```
 ### 4. Ejecucion (en local)
-Para correr en local la aplicacion corre el siguiente comando:
+Para correr en local la aplicacion, ejecuta el siguiente comando:
 
 ```bash
 streamlit run app.py
