@@ -1,4 +1,6 @@
 import streamlit as st
+from src.interface import InterfaceHelper
+
 
 # 1. Configuración (Debe ser la primera línea de Streamlit)
 st.set_page_config(
@@ -8,10 +10,9 @@ st.set_page_config(
 )
 
 # 2. Título y Bienvenida
-st.title("Proyecto Final Metodos Numericos")
-st.subheader("Calculadora de raices")
 
-st.markdown("---")
+InterfaceHelper.encabezado_main("Proyecto Metodos Numericos", "Aplicacion para encontrar raices con metodos "
+                                "numericos iterarativos")
 
 # 3. Información del Estudiante (Presentación)
 with st.sidebar:
