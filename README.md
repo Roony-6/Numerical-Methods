@@ -13,7 +13,7 @@ Este proyecto es una aplicación interactiva diseñada para resolver problemas c
 
 ---
 
-## Estructura del Proyecto
+## Estructura del Proyecto (actual)
 
 
 ```text
