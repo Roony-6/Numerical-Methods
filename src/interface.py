@@ -15,7 +15,7 @@ class InterfaceHelper:
     def inputs_metodo(metodo:str):
         inputs_necesarios = {} # Diccionario para guardar los parametros necesarios de cada metodo
 
-        if metodo in ["Bisección", "Punto Fijo","Falsa Posición"]:
+        if metodo in ["Bisección","Falsa Posición"]:
             st.write("Define el intervalo [a, b]")
             c1, c2 = st.columns(2)
             inputs_necesarios['a'] = c1.number_input("Valor de a:", value=0.0)
@@ -28,6 +28,19 @@ class InterfaceHelper:
             inputs_necesarios['x0'] = c1.number_input("x0:", value=0.0)
             inputs_necesarios['x1'] = c2.number_input("x1:", value=1.0)
             return inputs_necesarios
+        elif metodo == "Punto Fijo":
+            st.write("Proporciona g(x)")
+            gx = st.text_input("Funcion g(x)")
+            c1, c2 = st.columns(2)
+            inputs_necesarios['g(x)'] =  gx
+            inputs_necesarios['a'] = c1.number_input("Valor de a:", value=0.0)
+            inputs_necesarios['b'] = c2.number_input("Valor de b:", value=5.0)
+            return inputs_necesarios
+        elif metodo == "Newton Raphson":
+            c1,c2 = st.columns(2)
+            inputs_necesarios['p0'] = c1.number_input("p0:", value=0.0)
+            return inputs_necesarios   
+            
         
     # --- Metodos para visuales de de los metodos iterativos para encontrar raices ---"
     @staticmethod
