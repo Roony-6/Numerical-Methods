@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from src.metodos import SolucionadorRaices 
+from src.metodos.raices import SolucionadorRaices 
 from src.graficador import Graficador
 from src.interface import InterfaceHelper
 
