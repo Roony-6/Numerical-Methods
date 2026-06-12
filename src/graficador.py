@@ -50,5 +50,24 @@ class Graficador:
         self.fig.tight_layout()
         return self.fig
 
+    def graficar_area_bajo_curva(self, f, a, b, puntos_x=None):
+        margen = (b - a) * 0.15 or 1.0
+        x = np.linspace(a - margen, b + margen, 400)
+        y = [f(val) for val in x]
+        self.ax.plot(x, y, label="f(x)", linewidth=2, color='tab:blue')
+
+        x_area = np.linspace(a, b, 400)
+        y_area = [f(val) for val in x_area]
+        self.ax.fill_between(x_area, y_area, alpha=0.35, color='tab:orange',
+                             label="Área aproximada")
+
+        if puntos_x is not None:
+            for px in puntos_x:
+                self.ax.vlines(px, 0, f(px), color='tab:red', linestyle='--',
+                               alpha=0.8, linewidth=1)
+
+        self.ax.legend()
+        return self.fig
+
     def obtener_figura(self):
         return self.fig
