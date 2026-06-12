@@ -23,5 +23,32 @@ class Graficador:
         self.ax.scatter(px, py, color='red', s=40, zorder=5, label=label)
         self.ax.legend()
 
+    def graficar_derivada(self, df_resultados):
+        titulo = self.ax.get_title()
+        plt.close(self.fig)
+        self.fig, (ax_f, ax_df) = plt.subplots(2, 1, figsize=(9, 7), sharex=True)
+        self.ax = ax_f
+
+        x = df_resultados["x"]
+
+        ax_f.plot(x, df_resultados["f(x)"], color='tab:blue', marker='o',
+                  markersize=4, linewidth=2, label="f(x)")
+        ax_f.set_title(titulo)
+        ax_f.set_ylabel("f(x)")
+        ax_f.grid(True, linestyle='--', alpha=0.7)
+        ax_f.axhline(0, color='black', linewidth=1.5, alpha=0.5)
+        ax_f.legend()
+
+        ax_df.plot(x, df_resultados["f'(x)"], color='tab:red', marker='s',
+                   markersize=4, linewidth=2, label="f'(x) aproximada")
+        ax_df.set_xlabel("x")
+        ax_df.set_ylabel("f'(x)")
+        ax_df.grid(True, linestyle='--', alpha=0.7)
+        ax_df.axhline(0, color='black', linewidth=1.5, alpha=0.5)
+        ax_df.legend()
+
+        self.fig.tight_layout()
+        return self.fig
+
     def obtener_figura(self):
         return self.fig
