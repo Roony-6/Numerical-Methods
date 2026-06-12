@@ -90,5 +90,25 @@ class Graficador:
         self.ax.legend()
         return self.fig
 
+    def dibujar_frame_bungee(self, y_pos, L, max_y):
+        # Se limpia el eje en lugar de crear una figura nueva por frame
+        self.ax.clear()
+        color_cuerda = 'red' if y_pos > L else 'gray'
+        self.ax.plot([0, 0], [0, -y_pos], color=color_cuerda, linewidth=2.5,
+                     label="Cuerda estirada" if y_pos > L else "Cuerda")
+        self.ax.plot(0, -y_pos, 'o', color='tab:blue', markersize=14,
+                     label="Saltador")
+        self.ax.axhline(-L, color='black', linestyle='--', linewidth=1,
+                        alpha=0.5, label="Longitud natural (L)")
+        self.ax.axhline(0, color='saddlebrown', linewidth=4)
+
+        self.ax.set_xlim(-1, 1)
+        self.ax.set_ylim(-max_y, 10)
+        self.ax.set_xticks([])
+        self.ax.set_ylabel("Posición (m)")
+        self.ax.set_title("Simulación de Salto Bungee")
+        self.ax.legend(loc='lower right', fontsize=8)
+        return self.fig
+
     def obtener_figura(self):
         return self.fig
