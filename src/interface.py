@@ -29,17 +29,22 @@ class InterfaceHelper:
             inputs_necesarios['x1'] = c2.number_input("x1:", value=1.0)
             return inputs_necesarios
         elif metodo == "Punto Fijo":
-            st.write("Proporciona g(x)")
-            gx = st.text_input("Funcion g(x)")
+            st.write("Proporciona la función de iteración g(x) y el punto inicial")
             c1, c2 = st.columns(2)
-            inputs_necesarios['g(x)'] =  gx
-            inputs_necesarios['a'] = c1.number_input("Valor de a:", value=0.0)
-            inputs_necesarios['b'] = c2.number_input("Valor de b:", value=5.0)
+            inputs_necesarios['g(x)'] = c1.text_input("Funcion g(x):", "(x + 4/x) / 2")
+            inputs_necesarios['p0'] = c2.number_input("p0:", value=1.0)
             return inputs_necesarios
         elif metodo == "Newton Raphson":
             c1,c2 = st.columns(2)
             inputs_necesarios['p0'] = c1.number_input("p0:", value=0.0)
-            return inputs_necesarios   
+            return inputs_necesarios
+        elif metodo == "Müller":
+            st.write("Define las tres aproximaciones iniciales")
+            c1, c2, c3 = st.columns(3)
+            inputs_necesarios['p0'] = c1.number_input("p0:", value=0.0)
+            inputs_necesarios['p1'] = c2.number_input("p1:", value=1.0)
+            inputs_necesarios['p2'] = c3.number_input("p2:", value=2.0)
+            return inputs_necesarios
             
         
     # --- Metodos para visuales de de los metodos iterativos para encontrar raices ---"
