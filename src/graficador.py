@@ -69,5 +69,26 @@ class Graficador:
         self.ax.legend()
         return self.fig
 
+    def graficar_edo(self, df_resultados, titulo="Aproximación de EDO"):
+        self.ax.set_title(titulo)
+        self.ax.set_ylabel("y(x)")
+        self.ax.plot(df_resultados["x"], df_resultados["y_aprox"],
+                     color='tab:blue', marker='o', markersize=4,
+                     linewidth=2, label="y aproximada")
+        self.ax.legend()
+        return self.fig
+
+    def graficar_sistema_edo(self, df_resultados, titulo="Sistema de EDO"):
+        self.ax.set_title(titulo)
+        self.ax.set_ylabel("y(x)")
+        columnas_y = [c for c in df_resultados.columns
+                      if c.startswith('y') and c != 'y_aprox']
+        for columna in columnas_y:
+            self.ax.plot(df_resultados["x"], df_resultados[columna],
+                         marker='o', markersize=4, linewidth=2,
+                         label=f"{columna}(x)")
+        self.ax.legend()
+        return self.fig
+
     def obtener_figura(self):
         return self.fig
