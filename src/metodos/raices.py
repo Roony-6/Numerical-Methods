@@ -1,3 +1,5 @@
+import cmath
+
 from sympy import sympify, symbols, lambdify, diff
 
 class SolucionadorRaices:
@@ -236,13 +238,16 @@ class SolucionadorRaices:
         return self.raiz, historial
     
                 
-    def punto_fijo(self, p0: float) -> tuple:
+    def punto_fijo(self, g_str: str, p0: float) -> tuple:
         historial = []
 
+        # g(x) es la función de iteración, independiente de f(x)
+        x = symbols('x')
+        g = lambdify(x, sympify(g_str), modules='numpy')
+
         for i in range(self.max_iter):
-            # En este método, self.f asume el rol de g(x)
-            p1 = self.f(p0)
-            
+            p1 = g(p0)
+
             # El error es la diferencia absoluta entre iteraciones sucesivas
             cota_error = abs(p1 - p0)
 
@@ -250,7 +255,9 @@ class SolucionadorRaices:
                 "iteracion": i,
                 "p0": p0,
                 "p1": p1,
-                "error": cota_error
+                "f(p1)": self.f(p1),
+                "error": cota_error,
+                "aprox": p1
             })
 
             # Condición de convergencia
@@ -266,5 +273,77 @@ class SolucionadorRaices:
         self.raiz = p1
         self.convergio = False
         self.mensaje = "Se alcanzó el máximo de iteraciones (la función podría divergir)."
-        
+
+        return self.raiz, historial
+
+
+    def muller(self, p0: float, p1: float, p2: float) -> tuple:
+        historial = []
+        f0 = self.f(p0)
+        f1 = self.f(p1)
+        f2 = self.f(p2)
+
+        for i in range(self.max_iter):
+            # Diferencias divididas para construir la parábola
+            h0 = p1 - p0
+            h1 = p2 - p1
+
+            if h0 == 0 or h1 == 0 or (h1 + h0) == 0:
+                self.convergio = False
+                self.mensaje = "Error: Puntos repetidos (división por cero)."
+                return self.raiz, historial
+
+            delta0 = (f1 - f0) / h0
+            delta1 = (f2 - f1) / h1
+
+            a = (delta1 - delta0) / (h1 + h0)
+            b = a * h1 + delta1
+            c = f2
+
+            # cmath permite manejar discriminantes negativos (raíces complejas)
+            discriminante = cmath.sqrt(b**2 - 4 * a * c)
+
+            # Se elige el denominador de mayor magnitud para mayor estabilidad
+            if abs(b - discriminante) < abs(b + discriminante):
+                denominador = b + discriminante
+            else:
+                denominador = b - discriminante
+
+            if denominador == 0:
+                self.convergio = False
+                self.mensaje = "Error: División por cero en la fórmula de Müller."
+                return self.raiz, historial
+
+            p3 = p2 - (2 * c) / denominador
+
+            # Si la parte imaginaria es despreciable, trabajamos con el real
+            if isinstance(p3, complex) and abs(p3.imag) < self.tol:
+                p3 = p3.real
+
+            cota_error = abs(p3 - p2)
+
+            historial.append({
+                "iteracion": i,
+                "p0": p0,
+                "p1": p1,
+                "p2": p2,
+                "aproximacion": p3,
+                "error": cota_error,
+                "aprox": p3
+            })
+
+            if cota_error < self.tol:
+                self.raiz = p3
+                self.convergio = True
+                self.mensaje = f"Convergió en {i+1} iteraciones con error {cota_error:.2e}."
+                return self.raiz, historial
+
+            # Actualización de los tres puntos
+            p0, p1, p2 = p1, p2, p3
+            f0, f1 = f1, f2
+            f2 = self.f(p2)
+
+        self.raiz = p3
+        self.convergio = False
+        self.mensaje = "Se alcanzó el máximo de iteraciones sin converger."
         return self.raiz, historial
