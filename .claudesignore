@@ -1,0 +1,20 @@
+# Entornos virtuales (vital bloquearlos)
+venv/
+.venv/
+env/
+
+# Caché de Python y Streamlit
+__pycache__/
+*.pyc
+.pytest_cache/
+.streamlit/
+
+# Control de versiones
+.git/
+.github/
+
+# Documentación estática y configuraciones
+requirements.txt
+
+# Archivos de sistema
+.DS_Store
