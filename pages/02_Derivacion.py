@@ -43,3 +43,22 @@ if st.button("Calcular", type="primary"):
         st.pyplot(figura)
     except Exception as e:
         st.error(f"Error en el cálculo: {e}")
+
+if modo == "Función Analítica":
+    st.divider()
+    if st.checkbox("Aplicar Extrapolación de Richardson"):
+        st.caption("Combina dos aproximaciones centrales con pasos h1 y h2 para mejorar la precisión.")
+        c1, c2, c3 = st.columns(3)
+        x_val = c1.number_input("Punto x:", value=1.0, key="x_richardson")
+        h1 = c2.number_input("Paso h1:", value=0.1, format="%.6f", key="h1_richardson")
+        h2 = c3.number_input("Paso h2:", value=0.05, format="%.6f", key="h2_richardson")
+
+        if st.button("Aplicar Richardson", key="btn_richardson"):
+            try:
+                solver_r = DerivacionNumerica.desde_funcion(funcion, a, b, int(n))
+                resultado = solver_r.extrapolacion_richardson(x_val, h1, h2)
+                st.metric("f'(x) extrapolada", f"{resultado['resultado']:.10f}")
+                with st.expander("Ver detalles de la extrapolación"):
+                    st.write(resultado)
+            except Exception as e:
+                st.error(f"Error en la extrapolación: {e}")
