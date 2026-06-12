@@ -15,7 +15,7 @@ with col2:
 with col3:
     max_iter = st.number_input("Iteraciones máx", value=50, step=1)
 
-metodo = st.selectbox("Selecciona el método:", ["Bisección","Punto Fijo", "Falsa Posición", "Secante","Newton Raphson"])
+metodo = st.selectbox("Selecciona el método:", ["Bisección","Punto Fijo", "Falsa Posición", "Secante","Newton Raphson","Müller"])
 
 # --- PARÁMETROS ESPECÍFICOS 
 inputs_metodo = InterfaceHelper.inputs_metodo(metodo)
@@ -31,11 +31,13 @@ if st.button("Calcular"):
     elif metodo == "Secante":
         raiz, resultado = solucionador.secante(inputs_metodo['x0'], inputs_metodo['x1'])
     elif metodo == "Punto Fijo":
-        raiz,resultado = solucionador.punto_fijo(inputs_metodo['g(x)'],inputs_metodo['a'], inputs_metodo['b'])
+        raiz,resultado = solucionador.punto_fijo(inputs_metodo['g(x)'], inputs_metodo['p0'])
     elif metodo == "Newton Raphson":
         raiz,resultado = solucionador.newton_rapshon(inputs_metodo['p0'])
     elif metodo == "Falsa Posición":
         raiz, resultado = solucionador.falsa_posicion(inputs_metodo['a'],inputs_metodo['b'])
+    elif metodo == "Müller":
+        raiz, resultado = solucionador.muller(inputs_metodo['p0'], inputs_metodo['p1'], inputs_metodo['p2'])
     # Mostrar Resultados
     if resultado is not None:
         
@@ -44,13 +46,17 @@ if st.button("Calcular"):
         # Gráfica
         grafica = Graficador(titulo=f"Análisis de {metodo}")
         # Ajustamos el rango de la gráfica según los inputs para que se vea la raíz
-        rango_a = min(inputs_metodo.values()) - 3
-        rango_b = max(inputs_metodo.values()) + 3
+        # Solo valores numéricos: Punto Fijo incluye el string de g(x) en los inputs
+        valores_numericos = [v for v in inputs_metodo.values() if isinstance(v, (int, float))]
+        rango_a = min(valores_numericos) - 3
+        rango_b = max(valores_numericos) + 3
         grafica.graficar_funcion(solucionador.f, rango_a, rango_b)
         
         # Extraemos los puntos x del historial para marcarlos (asumiendo que 'resultado' es una lista de dicts)
         #puntos_x = [it['c'] for it in resultado] if 'c' in resultado[0] else []
         puntos_x = [it['aprox'] for it in resultado] if 'aprox' in resultado[0] else []
+        # Müller puede producir aproximaciones complejas; graficamos solo la parte real
+        puntos_x = [p.real if isinstance(p, complex) else p for p in puntos_x]
         puntos_y = [solucionador.f(x) for x in puntos_x]
         grafica.marcar_puntos(puntos_x, puntos_y)
         
