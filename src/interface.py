@@ -59,6 +59,18 @@ class InterfaceHelper:
             inputs_necesarios['x0'] = c2.number_input("Punto x0:", value=0.0)
             inputs_necesarios['grado'] = c3.number_input("Grado:", value=3, min_value=1, max_value=10)
             return inputs_necesarios
+        elif metodo == "Gauss-Legendre":
+            c1, c2, c3 = st.columns(3)
+            inputs_necesarios['a'] = c1.number_input("Límite a:", value=0.0)
+            inputs_necesarios['b'] = c2.number_input("Límite b:", value=1.0)
+            inputs_necesarios['n_puntos'] = c3.number_input("Puntos de Gauss:", value=3, min_value=1, max_value=20)
+            return inputs_necesarios
+        elif metodo == "Adaptativa":
+            c1, c2, c3 = st.columns(3)
+            inputs_necesarios['a'] = c1.number_input("Límite a:", value=0.0)
+            inputs_necesarios['b'] = c2.number_input("Límite b:", value=1.0)
+            inputs_necesarios['tol'] = c3.number_input("Tolerancia:", value=1e-6, format="%.2e")
+            return inputs_necesarios
             
         
     # --- Metodos para visuales de de los metodos iterativos para encontrar raices ---"

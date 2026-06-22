@@ -122,6 +122,94 @@ class IntegracionNumerica:
             "pesos": pesos.tolist(),
         }
 
+    def cuadratura_gauss_legendre(self, a, b, n_puntos):
+        """
+        Cuadratura de Gauss-Legendre en [a, b] con n_puntos nodos.
+
+        Args:
+            a: límite inferior
+            b: límite superior
+            n_puntos: número de puntos de Gauss
+
+        Returns:
+            (valor_integral, detalles)
+        """
+        return self.integral_gaussiana(a, b, n_puntos)
+
+    def cuadratura_adaptativa(self, a, b, tol):
+        """
+        Integración adaptativa usando Simpson 1/3 recursivo.
+
+        Args:
+            a: límite inferior
+            b: límite superior
+            tol: tolerancia de error
+
+        Returns:
+            (valor_integral, detalles)
+        """
+        puntos_evaluados = []
+
+        def simpson_adaptativo(a, b, tol, nivel=0):
+            h = b - a
+            c = (a + b) / 2
+
+            fa = self.f(a)
+            fc = self.f(c)
+            fb = self.f(b)
+
+            puntos_evaluados.extend([a, c, b])
+
+            simpson_completo = (h / 6) * (fa + 4 * fc + fb)
+
+            if nivel == 0:
+                c1 = (a + c) / 2
+                c2 = (c + b) / 2
+                fc1 = self.f(c1)
+                fc2 = self.f(c2)
+                puntos_evaluados.extend([c1, c2])
+
+                simpson_izq = ((c - a) / 6) * (fa + 4 * fc1 + fc)
+                simpson_der = ((b - c) / 6) * (fc + 4 * fc2 + fb)
+                simpson_doble = simpson_izq + simpson_der
+
+                error = abs(simpson_doble - simpson_completo) / 15.0
+
+                if error < tol:
+                    return simpson_doble
+                else:
+                    izq = simpson_adaptativo(a, c, tol / 2, nivel + 1)
+                    der = simpson_adaptativo(c, b, tol / 2, nivel + 1)
+                    return izq + der
+            else:
+                c1 = (a + c) / 2
+                c2 = (c + b) / 2
+                fc1 = self.f(c1)
+                fc2 = self.f(c2)
+                puntos_evaluados.extend([c1, c2])
+
+                simpson_izq = ((c - a) / 6) * (fa + 4 * fc1 + fc)
+                simpson_der = ((b - c) / 6) * (fc + 4 * fc2 + fb)
+                simpson_doble = simpson_izq + simpson_der
+
+                error = abs(simpson_doble - simpson_completo) / 15.0
+
+                if error < tol:
+                    return simpson_doble
+                else:
+                    izq = simpson_adaptativo(a, c, tol / 2, nivel + 1)
+                    der = simpson_adaptativo(c, b, tol / 2, nivel + 1)
+                    return izq + der
+
+        valor = simpson_adaptativo(a, b, tol)
+        puntos_evaluados_unicos = sorted(list(set(np.round(puntos_evaluados, 12))))
+
+        return valor, {
+            "metodo": "Integración Adaptativa (Simpson 1/3)",
+            "tolerancia": tol,
+            "nodos": puntos_evaluados_unicos
+        }
+
     @staticmethod
     def _validar_n(n):
         n = int(n)

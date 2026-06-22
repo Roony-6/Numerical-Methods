@@ -20,8 +20,8 @@ def mostrar_resultado(valor, detalles, f=None, a=None, b=None):
         st.pyplot(figura)
 
 
-tab_simple, tab_compuesta, tab_multiple = st.tabs(
-    ["Integración Simple", "Integración Compuesta", "Integración Múltiple"]
+tab_simple, tab_compuesta, tab_multiple, tab_avanzado = st.tabs(
+    ["Integración Simple", "Integración Compuesta", "Integración Múltiple", "Métodos Avanzados"]
 )
 
 with tab_simple:
@@ -109,3 +109,46 @@ with tab_multiple:
                 mostrar_resultado(valor, detalles, integrador.f, a_g, b_g)
             except Exception as e:
                 st.error(f"Error en el cálculo: {e}")
+
+with tab_avanzado:
+    metodo_a = st.selectbox("Método avanzado:", ["Gauss-Legendre", "Adaptativa"],
+                           key="metodo_avanzado")
+
+    if metodo_a == "Gauss-Legendre":
+        c1, c2, c3, c4 = st.columns(4)
+        funcion_a = c1.text_input("Función f(x):", "x**2", key="f_gauss_leg")
+        a_a = c2.number_input("Límite a:", value=0.0, key="a_gauss_leg")
+        b_a = c3.number_input("Límite b:", value=2.0, key="b_gauss_leg")
+        n_a = c4.number_input("Puntos:", value=3, min_value=1, max_value=20, key="n_gauss_leg")
+
+        if st.button("Calcular", type="primary", key="btn_gauss_leg"):
+            try:
+                integrador = IntegracionNumerica(funcion_a)
+                valor, detalles = integrador.cuadratura_gauss_legendre(a_a, b_a, int(n_a))
+                mostrar_resultado(valor, detalles, integrador.f, a_a, b_a)
+            except Exception as e:
+                st.error(f"Error: {e}")
+
+    else:
+        c1, c2, c3, c4 = st.columns(4)
+        funcion_ad = c1.text_input("Función f(x):", "x**2", key="f_adapt")
+        a_ad = c2.number_input("Límite a:", value=0.0, key="a_adapt")
+        b_ad = c3.number_input("Límite b:", value=2.0, key="b_adapt")
+        tol_ad = c4.number_input("Tolerancia:", value=1e-6, format="%.2e", key="tol_adapt")
+
+        if st.button("Calcular", type="primary", key="btn_adapt"):
+            try:
+                integrador = IntegracionNumerica(funcion_ad)
+                valor, detalles = integrador.cuadratura_adaptativa(a_ad, b_ad, tol_ad)
+                st.success(f"Cálculo completado con {detalles['metodo']}")
+                st.metric("Integral aproximada", f"{valor:.10f}")
+                col1, col2 = st.columns(2)
+                col1.metric("Tolerancia", f"{detalles['tolerancia']:.2e}")
+                col2.metric("Puntos evaluados", len(detalles['nodos']))
+                with st.expander("Ver detalles del cálculo"):
+                    st.write(detalles)
+                graficador = Graficador(f"Área bajo la curva — {detalles['metodo']}")
+                figura = graficador.graficar_area_bajo_curva(integrador.f, a_ad, b_ad, puntos_x=detalles.get("nodos"))
+                st.pyplot(figura)
+            except Exception as e:
+                st.error(f"Error: {e}")
