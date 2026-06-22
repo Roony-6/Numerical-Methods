@@ -22,7 +22,7 @@ class Interpolador:
         Calcula la tabla de diferencias divididas de Newton.
 
         Returns:
-            (polinomio_simbolico, tabla_diferencias)
+            (polinomio_simbolico, tabla_diferencias, funcion_evaluacion)
         """
         x = symbols('x')
 
@@ -42,7 +42,21 @@ class Interpolador:
 
         polinomio_simbolico = expand(polinomio)
 
-        return polinomio_simbolico, tabla
+        # Función de evaluación usando forma de Newton (más estable numéricamente)
+        coeficientes = tabla[0, :].copy()
+        nodos = self.x.copy()
+
+        def evaluar_newton(x_val):
+            resultado = coeficientes[0]
+            termino = 1.0
+            for i in range(1, self.n):
+                termino *= (x_val - nodos[i-1])
+                resultado += coeficientes[i] * termino
+            return resultado
+
+        f_newton = np.vectorize(evaluar_newton)
+
+        return polinomio_simbolico, tabla, f_newton
 
     def lagrange(self):
         """

@@ -42,7 +42,7 @@ if btn_calc:
         interpolador = Interpolador(x_vals, y_vals)
 
         if metodo == "Diferencias Divididas":
-            polinomio, tabla = interpolador.diferencias_divididas()
+            polinomio, tabla, f_newton = interpolador.diferencias_divididas()
             st.success("Polinomio calculado mediante Diferencias Divididas")
 
             st.subheader("Polinomio resultante:")
@@ -75,7 +75,11 @@ if btn_calc:
 
         grafica.ax.scatter(x_vals, y_vals, color='red', s=100, label='Datos', zorder=5)
 
-        if metodo != "Neville":
+        if metodo == "Diferencias Divididas":
+            x_continuo = np.linspace(min(x_vals) - 1, max(x_vals) + 1, 200)
+            y_continuo = f_newton(x_continuo)
+            grafica.ax.plot(x_continuo, y_continuo, label='Polinomio', color='blue', linewidth=2)
+        elif metodo == "Lagrange":
             x = symbols('x')
             f_poly = lambdify(x, polinomio, 'numpy')
             x_continuo = np.linspace(min(x_vals) - 1, max(x_vals) + 1, 200)
