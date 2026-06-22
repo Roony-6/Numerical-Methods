@@ -32,11 +32,6 @@ class IntegracionNumerica:
         valor = (3 * h / 8) * (y[0] + 3 * y[1] + 3 * y[2] + y[3])
         return valor, {"metodo": "Simpson 3/8", "h": h, "nodos": nodos}
 
-    def regla_punto_medio(self, a, b):
-        h = b - a
-        nodos = [(a + b) / 2]
-        valor = h * self._evaluar(nodos)[0]
-        return valor, {"metodo": "Punto Medio", "h": h, "nodos": nodos}
 
     # --- Integración compuesta ---
     def trapecio_compuesta(self, a, b, n):
@@ -69,12 +64,6 @@ class IntegracionNumerica:
         valor = (3 * h / 8) * (y[0] + 3 * suma_no_multiplos + 2 * suma_multiplos + y[-1])
         return valor, {"metodo": "Simpson 3/8 Compuesta", "h": h, "n": n, "nodos": nodos.tolist()}
 
-    def punto_medio_compuesta(self, a, b, n):
-        n = self._validar_n(n)
-        h = (b - a) / n
-        medios = a + h * (np.arange(n) + 0.5)
-        valor = h * self._evaluar(medios).sum()
-        return valor, {"metodo": "Punto Medio Compuesta", "h": h, "n": n, "nodos": medios.tolist()}
 
     # --- Integración múltiple ---
     @staticmethod

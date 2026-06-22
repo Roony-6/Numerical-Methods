@@ -29,7 +29,7 @@ with tab_simple:
     funcion = c1.text_input("Función f(x):", "x**2", key="f_simple")
     a = c2.number_input("Límite a:", value=0.0, key="a_simple")
     b = c3.number_input("Límite b:", value=2.0, key="b_simple")
-    metodo = st.selectbox("Método:", ["Trapecio", "Simpson 1/3", "Simpson 3/8", "Punto Medio"],
+    metodo = st.selectbox("Método:", ["Trapecio", "Simpson 1/3", "Simpson 3/8"],
                           key="metodo_simple")
 
     if st.button("Calcular", type="primary", key="btn_simple"):
@@ -39,10 +39,8 @@ with tab_simple:
                 valor, detalles = integrador.regla_trapecio(a, b)
             elif metodo == "Simpson 1/3":
                 valor, detalles = integrador.regla_simpson_1_3(a, b)
-            elif metodo == "Simpson 3/8":
-                valor, detalles = integrador.regla_simpson_3_8(a, b)
             else:
-                valor, detalles = integrador.regla_punto_medio(a, b)
+                valor, detalles = integrador.regla_simpson_3_8(a, b)
             mostrar_resultado(valor, detalles, integrador.f, a, b)
         except Exception as e:
             st.error(f"Error en el cálculo: {e}")
@@ -53,7 +51,7 @@ with tab_compuesta:
     a_c = c2.number_input("Límite a:", value=0.0, key="a_comp")
     b_c = c3.number_input("Límite b:", value=2.0, key="b_comp")
     n_c = c4.number_input("Subintervalos (n):", value=6, min_value=1, step=1, key="n_comp")
-    metodo_c = st.selectbox("Método:", ["Trapecio", "Simpson 1/3", "Simpson 3/8", "Punto Medio"],
+    metodo_c = st.selectbox("Método:", ["Trapecio", "Simpson 1/3", "Simpson 3/8"],
                             key="metodo_comp")
 
     if st.button("Calcular", type="primary", key="btn_comp"):
@@ -64,10 +62,8 @@ with tab_compuesta:
                 valor, detalles = integrador.trapecio_compuesta(a_c, b_c, n_int)
             elif metodo_c == "Simpson 1/3":
                 valor, detalles = integrador.simpson_1_3_compuesta(a_c, b_c, n_int)
-            elif metodo_c == "Simpson 3/8":
-                valor, detalles = integrador.simpson_3_8_compuesta(a_c, b_c, n_int)
             else:
-                valor, detalles = integrador.punto_medio_compuesta(a_c, b_c, n_int)
+                valor, detalles = integrador.simpson_3_8_compuesta(a_c, b_c, n_int)
             mostrar_resultado(valor, detalles, integrador.f, a_c, b_c)
         except Exception as e:
             st.error(f"Error en el cálculo: {e}")
