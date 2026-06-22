@@ -32,34 +32,6 @@ class DerivacionNumerica:
         instancia.f = f
         return instancia
 
-    def extrapolacion_richardson(self, x_val, h1, h2, orden=2):
-        """Combina D(h1) y D(h2) (diferencias centrales de orden O(h^orden))
-        para cancelar el término dominante del error."""
-        if self.f is None:
-            raise ValueError("La extrapolación de Richardson requiere una función analítica (usa desde_funcion).")
-        if h1 <= 0 or h2 <= 0:
-            raise ValueError("h1 y h2 deben ser positivos.")
-        if np.isclose(h1, h2):
-            raise ValueError("h1 y h2 deben ser distintos.")
-        if h2 > h1:
-            h1, h2 = h2, h1
-
-        d_h1 = (self.f(x_val + h1) - self.f(x_val - h1)) / (2 * h1)
-        d_h2 = (self.f(x_val + h2) - self.f(x_val - h2)) / (2 * h2)
-
-        q = h1 / h2
-        resultado = d_h2 + (d_h2 - d_h1) / (q ** orden - 1)
-
-        return {
-            "x": x_val,
-            "h1": h1,
-            "h2": h2,
-            "d_h1": d_h1,
-            "d_h2": d_h2,
-            "orden": orden,
-            "resultado": resultado,
-        }
-
     def calcular_derivadas(self):
         n_pts = len(self.x)
         resultados = []
