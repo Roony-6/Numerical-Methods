@@ -60,7 +60,7 @@ class SolucionadorRaices:
             })
 
             # Verificación de raíz exacta o convergencia
-            if fc == 0 or (cota_error < self.tol):
+            if abs(fc) < self.tol or (cota_error < self.tol):
                 self.raiz = c_actual
                 self.convergio = True
                 self.mensaje = f"Convergencia lograda en iteración {i}."
@@ -69,10 +69,10 @@ class SolucionadorRaices:
             # Actualización inteligente
             if fa * fc < 0:
                 b = c_actual
-                # fb = fc  (No es estrictamente necesario guardarlo si no lo usas)
+                fb = fc
             else:
                 a = c_actual
-                fa = fc # Evita re-evaluar f(a) en la siguiente iteración
+                fa = fc
 
         self.raiz = c_actual
         self.convergio = False
@@ -216,7 +216,7 @@ class SolucionadorRaices:
             })
 
             # Verificación de raíz exacta o convergencia
-            if fc == 0 or error < self.tol:
+            if abs(fc) < self.tol or (error < self.tol and abs(fc) < 0.01):
                 self.raiz = c_actual
                 self.convergio = True
                 self.mensaje = f"Convergió en {i+1} iteraciones con error {error:.2e}."
