@@ -13,7 +13,7 @@ tipo_aproximacion = st.selectbox("Tipo de aproximación:",
                                 ["Mínimos Cuadrados Polinomial", "Polinomio de Taylor"])
 
 if tipo_aproximacion == "Mínimos Cuadrados Polinomial":
-    st.subheader("📊 Mínimos Cuadrados - Ajuste Polinomial")
+    st.subheader("Mínimos Cuadrados - Ajuste Polinomial")
 
     col1, col2 = st.columns([2, 1])
     with col1:
@@ -34,7 +34,7 @@ if tipo_aproximacion == "Mínimos Cuadrados Polinomial":
     with col2:
         st.empty()
     with col3:
-        btn_calc = st.button("🧮 Calcular", type="primary", use_container_width=True)
+        btn_calc = st.button("Calcular", type="primary", use_container_width=True)
 
     if btn_calc:
         try:
@@ -68,10 +68,10 @@ if tipo_aproximacion == "Mínimos Cuadrados Polinomial":
             st.pyplot(grafica.obtener_figura())
 
         except Exception as e:
-            st.error(f"❌ Error: {str(e)}")
+            st.error(f"Error: {str(e)}")
 
 else:
-    st.subheader("📐 Polinomio de Taylor")
+    st.subheader("Polinomio de Taylor")
 
     col1, col2, col3 = st.columns(3)
     with col1:
@@ -81,7 +81,7 @@ else:
     with col3:
         grado = st.number_input("Grado n:", value=3, min_value=1, max_value=10)
 
-    btn_taylor = st.button("🧮 Calcular Taylor", type="primary", use_container_width=True)
+    btn_taylor = st.button("Calcular Taylor", type="primary", use_container_width=True)
 
     if btn_taylor:
         try:
@@ -114,4 +114,4 @@ else:
             st.pyplot(grafica.obtener_figura())
 
         except Exception as e:
-            st.error(f"❌ Error: {str(e)}")
+            st.error(f"Error: {str(e)}")
