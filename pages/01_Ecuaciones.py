@@ -85,9 +85,10 @@ if btn_calc:
             rango_b = max(valores_numericos) + 3
             grafica.graficar_funcion(solucionador.f, rango_a, rango_b)
 
-            puntos_x = [it['aprox'] for it in resultado] if 'aprox' in resultado[0] else []
+            puntos_x = [it['aprox'] for it in resultado] if resultado and 'aprox' in resultado[0] else []
             puntos_x = [p.real if isinstance(p, complex) else p for p in puntos_x]
             puntos_y = [solucionador.f(x) for x in puntos_x]
-            grafica.marcar_puntos(puntos_x, puntos_y)
+            if puntos_x:
+                grafica.marcar_puntos(puntos_x, puntos_y)
 
             st.pyplot(grafica.obtener_figura())
