@@ -15,7 +15,7 @@ class InterfaceHelper:
     def inputs_metodo(metodo:str):
         inputs_necesarios = {} # Diccionario para guardar los parametros necesarios de cada metodo
 
-        if metodo in ["Bisección","Falsa Posición"]:
+        if metodo in ["Bisección", "Falsa Posición", "Falsa Posicion"]:
             st.write("Define el intervalo [a, b]")
             c1, c2 = st.columns(2)
             inputs_necesarios['a'] = c1.number_input("Valor de a:", value=0.0)
