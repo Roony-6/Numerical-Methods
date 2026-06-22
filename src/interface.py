@@ -49,6 +49,16 @@ class InterfaceHelper:
             c1 = st.columns(1)[0]
             inputs_necesarios['x_target'] = c1.number_input("Valor x a interpolar:", value=0.5)
             return inputs_necesarios
+        elif metodo == "Mínimos Cuadrados":
+            c1, c2 = st.columns(2)
+            inputs_necesarios['grado'] = c1.number_input("Grado del polinomio:", value=2, min_value=1, max_value=10)
+            return inputs_necesarios
+        elif metodo == "Taylor":
+            c1, c2, c3 = st.columns(3)
+            inputs_necesarios['funcion'] = c1.text_input("f(x):", "sin(x)")
+            inputs_necesarios['x0'] = c2.number_input("Punto x0:", value=0.0)
+            inputs_necesarios['grado'] = c3.number_input("Grado:", value=3, min_value=1, max_value=10)
+            return inputs_necesarios
             
         
     # --- Metodos para visuales de de los metodos iterativos para encontrar raices ---"
