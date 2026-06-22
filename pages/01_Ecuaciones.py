@@ -45,50 +45,62 @@ with col3:
     btn_calc = st.button("Calcular", type="primary", use_container_width=True)
 
 if btn_calc:
-    solucionador = SolucionadorRaices(funcion, tol=tol, max_iter=max_iter)
-    resultado = None
+    try:
+        # Validar función antes de procesarla
+        from sympy import sympify, symbols
+        try:
+            sympify(funcion)
+        except Exception as e:
+            st.error(f"❌ Error en la función ingresada:\n\n{str(e)}\n\n**Ejemplos válidos:**\n- x**2 - 4\n- sin(x) - x/2\n- exp(x) * cos(x)\n- (x**3 - 2*x - 5)/(x + 1)")
+            st.stop()
 
-    if metodo == "Bisección":
-        raiz, resultado = solucionador.biseccion(inputs_metodo['a'], inputs_metodo['b'])
-    elif metodo == "Secante":
-        raiz, resultado = solucionador.secante(inputs_metodo['x0'], inputs_metodo['x1'])
-    elif metodo == "Punto Fijo":
-        raiz, resultado = solucionador.punto_fijo(inputs_metodo['g(x)'], inputs_metodo['p0'])
-    elif metodo == "Newton Raphson":
-        raiz, resultado = solucionador.newton_rapshon(inputs_metodo['p0'])
-    elif metodo == "Falsa Posicion":
-        raiz, resultado = solucionador.falsa_posicion(inputs_metodo['a'], inputs_metodo['b'])
-    elif metodo == "Müller":
-        raiz, resultado = solucionador.muller(inputs_metodo['p0'], inputs_metodo['p1'], inputs_metodo['p2'])
+        solucionador = SolucionadorRaices(funcion, tol=tol, max_iter=max_iter)
+        resultado = None
 
-    if resultado is not None:
-        st.subheader("Resultados")
-        InterfaceHelper.mostrar_metricas(solver=solucionador)
+        if metodo == "Bisección":
+            raiz, resultado = solucionador.biseccion(inputs_metodo['a'], inputs_metodo['b'])
+        elif metodo == "Secante":
+            raiz, resultado = solucionador.secante(inputs_metodo['x0'], inputs_metodo['x1'])
+        elif metodo == "Punto Fijo":
+            raiz, resultado = solucionador.punto_fijo(inputs_metodo['g(x)'], inputs_metodo['p0'])
+        elif metodo == "Newton Raphson":
+            raiz, resultado = solucionador.newton_rapshon(inputs_metodo['p0'])
+        elif metodo == "Falsa Posicion":
+            raiz, resultado = solucionador.falsa_posicion(inputs_metodo['a'], inputs_metodo['b'])
+        elif metodo == "Müller":
+            raiz, resultado = solucionador.muller(inputs_metodo['p0'], inputs_metodo['p1'], inputs_metodo['p2'])
 
-        col_tabla, col_grafica = st.columns(2)
+        if resultado is not None:
+            st.subheader("Resultados")
+            InterfaceHelper.mostrar_metricas(solver=solucionador)
 
-        with col_tabla:
-            st.subheader("Historial de iteraciones")
-            with st.container():
-                if resultado:
-                    import pandas as pd
-                    df = pd.DataFrame(resultado)
-                    df.index += 1
-                    st.dataframe(df, use_container_width=True, height=400)
+            col_tabla, col_grafica = st.columns(2)
 
-        with col_grafica:
-            st.subheader("Grafica")
-            grafica = Graficador(titulo=f"Analisis - {metodo}")
+            with col_tabla:
+                st.subheader("Historial de iteraciones")
+                with st.container():
+                    if resultado:
+                        import pandas as pd
+                        df = pd.DataFrame(resultado)
+                        df.index += 1
+                        st.dataframe(df, use_container_width=True, height=400)
 
-            valores_numericos = [v for v in inputs_metodo.values() if isinstance(v, (int, float))]
-            rango_a = min(valores_numericos) - 3
-            rango_b = max(valores_numericos) + 3
-            grafica.graficar_funcion(solucionador.f, rango_a, rango_b)
+            with col_grafica:
+                st.subheader("Grafica")
+                grafica = Graficador(titulo=f"Analisis - {metodo}")
 
-            puntos_x = [it['aprox'] for it in resultado] if resultado and 'aprox' in resultado[0] else []
-            puntos_x = [p.real if isinstance(p, complex) else p for p in puntos_x]
-            puntos_y = [solucionador.f(x) for x in puntos_x]
-            if puntos_x:
-                grafica.marcar_puntos(puntos_x, puntos_y)
+                valores_numericos = [v for v in inputs_metodo.values() if isinstance(v, (int, float))]
+                rango_a = min(valores_numericos) - 3
+                rango_b = max(valores_numericos) + 3
+                grafica.graficar_funcion(solucionador.f, rango_a, rango_b)
 
-            st.pyplot(grafica.obtener_figura())
+                puntos_x = [it['aprox'] for it in resultado] if resultado and 'aprox' in resultado[0] else []
+                puntos_x = [p.real if isinstance(p, complex) else p for p in puntos_x]
+                puntos_y = [solucionador.f(x) for x in puntos_x]
+                if puntos_x:
+                    grafica.marcar_puntos(puntos_x, puntos_y)
+
+                st.pyplot(grafica.obtener_figura())
+
+    except Exception as e:
+        st.error(f"Error en el cálculo: {str(e)}")
