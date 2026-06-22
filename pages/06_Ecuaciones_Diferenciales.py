@@ -32,8 +32,8 @@ def mostrar_resultados(df_resultados, metodo, xf, graficar):
     st.pyplot(figura)
 
 
-tab_pvi, tab_adams, tab_sistemas = st.tabs(
-    ["Valor Inicial (1er Orden)", "Multipaso (Adams)", "Sistemas y Orden Superior"]
+tab_pvi, tab_heun, tab_sistemas = st.tabs(
+    ["Valor Inicial (1er Orden)", "Heun", "Sistemas y Orden Superior"]
 )
 
 with tab_pvi:
@@ -78,23 +78,23 @@ with tab_pvi:
         except Exception as e:
             st.error(f"Error en el cálculo: {e}")
 
-with tab_adams:
-    funcion_a, x0_a, y0_a, xf_a = inputs_pvi("adams")
-    h_a = st.number_input("Tamaño de paso h:", value=0.1, format="%.4f",
-                          min_value=1e-6, key="h_adams")
-    st.caption("Los primeros 3 pasos se calculan con RK4 para arrancar el método multipaso.")
+with tab_heun:
+    funcion_h, x0_h, y0_h, xf_h = inputs_pvi("heun")
+    h_h = st.number_input("Tamaño de paso h:", value=0.1, format="%.4f",
+                          min_value=1e-6, key="h_heun")
+    st.caption("Metodo predictor-corrector que mejora sobre Euler usando dos evaluaciones de la funcion.")
 
-    if st.button("Calcular", type="primary", key="btn_adams"):
+    if st.button("Calcular", type="primary", key="btn_heun"):
         try:
-            if xf_a <= x0_a:
+            if xf_h <= x0_h:
                 st.error("El valor final xf debe ser mayor que x0.")
             else:
-                solucionador = SolucionadorEDO(funcion_a)
-                df_resultados = solucionador.adams_bashforth_moulton(x0_a, y0_a, xf_a, h_a)
+                solucionador = SolucionadorEDO(funcion_h)
+                df_resultados = solucionador.metodo_heun(x0_h, y0_h, xf_h, h_h)
                 mostrar_resultados(
-                    df_resultados, "Adams-Bashforth-Moulton (4to orden)", xf_a,
+                    df_resultados, "Heun", xf_h,
                     lambda g, df: g.graficar_edo(
-                        df, "Aproximación de EDO — Adams-Bashforth-Moulton"))
+                        df, "Aproximacion de EDO — Heun"))
         except Exception as e:
             st.error(f"Error en el cálculo: {e}")
 

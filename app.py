@@ -1,45 +1,58 @@
 import streamlit as st
 from src.interface import InterfaceHelper
 
-
-# 1. Configuración 
 st.set_page_config(
-    page_title="Proyecto Metodos Numericos",
-    page_icon="R",
+    page_title="Metodos Numericos",
+    page_icon="λ",
     layout="wide"
 )
 
-# 2. Título y Bienvenida
+InterfaceHelper.encabezado_main(
+    "Metodos Numericos",
+    "Aplicacion para resolver problemas matematicos con metodos numericos"
+)
 
-InterfaceHelper.encabezado_main("Proyecto Metodos Numericos", "Aplicacion para encontrar raices con metodos "
-                                "numericos iterarativos y mas")
-
-# 3. Información del Estudiante (Presentación)
 with st.sidebar:
-    st.info(" **Roony Roldan Cruz** \n\n **Institucion:** Instituto Politecnico Nacional \n\n **Universidad:** Escuela Superior de Computo")
+    st.info(
+        "**Roony Roldan Cruz**\n\n"
+        "**Institucion:** Instituto Politecnico Nacional\n\n"
+        "**Escuela:** Escuela Superior de Computo"
+    )
 
-# 4. Contenido Principal
-col1, col2 = st.columns([2, 1])
+col1, col2 = st.columns([3, 1])
 
 with col1:
+    st.subheader("Modulos Disponibles")
     st.write("""
-    ### Calculadora de raices 
-    Esta aplicación permite resolver problemas complejos para encontrar raices con 
-    la implementación de algoritmos matemáticos **.
-    
-    **Secciones disponibles:**
-    * **Raíces de Ecuaciones:** Bisección, Newton-Raphson, Secante,etc.
-    **Por desarrollar:**
-    * **Interpolación:** Lagrange, Newton (Diferencias Divididas).
-    * **Aproximaciones** Polinomios por minimos cuadrados
-    * **Derivacion:** Derivacion numerica
-    * **Integración:** Regla del Trapecio y Simpson.
+    Esta aplicacion implementa algoritmos numericos para resolver diversos problemas matematicos.
+    Selecciona un modulo en el menu lateral para comenzar.
+
+    **Modulos implementados:**
+
+    1. **Ecuaciones No Lineales** - Encuentra raices de ecuaciones
+       - Bisección, Falsa Posición, Secante, Newton-Raphson, Müller, Punto Fijo
+
+    2. **Interpolacion Polinomial** - Interpola datos mediante polinomios
+       - Diferencias Divididas, Lagrange, Neville
+
+    3. **Aproximacion de Funciones** - Ajusta funciones a datos
+       - Minimos Cuadrados Polinomial, Polinomios de Taylor
+
+    4. **Derivacion Numerica** - Calcula derivadas aproximadas
+       - Diferencias Finitas, Derivadas de orden superior
+
+    5. **Integracion Numerica** - Aproxima integrales definidas
+       - Simple (Trapecio, Simpson 1/3, Simpson 3/8)
+       - Compuesta (Trapecio, Simpson 1/3, Simpson 3/8)
+       - Integral Doble, Gauss-Legendre, Adaptativa
+
+    6. **Ecuaciones Diferenciales** - Resuelve EDO y sistemas
+       - Euler, Taylor (Orden 2), Runge-Kutta 4, RKF45, Heun
+
+    7. **Simulacion Bungee** - Simulacion fisica del salto bungee
+       - Runge-Kutta 4 con visualizacion
     """)
-    
-    # Ejemplo de fórmula en LaTeX
-    #st.latex(r"f(x) = \sum_{i=0}^{n} y_i L_i(x)")
 
-#with col2:
-    #st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/1200px-Python-logo-notext.svg.png", width=150)
+st.divider()
 
-st.success(" <- Selecciona un método en el menú de la izquierda para comenzar.")
+st.success("Selecciona un modulo en el menu de la izquierda para comenzar.")

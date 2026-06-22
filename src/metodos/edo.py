@@ -57,31 +57,18 @@ class SolucionadorEDO:
             historial.append({'Iteración': i, 'x': x, 'y_aprox': y, 'h_usado': h_paso})
         return self._construir_dataframe(historial)
 
-    def adams_bashforth_moulton(self, x0, y0, xf, h):
-        n_pasos = int(round((xf - x0) / h))
-        if n_pasos < 4:
-            return self.runge_kutta_4(x0, y0, xf, h)
-
-        # Arranque: los primeros 3 pasos se calculan con RK4
-        df_arranque = self.runge_kutta_4(x0, y0, x0 + 3 * h, h)
-        xs = df_arranque['x'].tolist()
-        ys = df_arranque['y_aprox'].tolist()
-        historial = df_arranque.to_dict('records')
-        fs = [self.f(xi, yi) for xi, yi in zip(xs, ys)]
-
-        for i in range(4, n_pasos + 1):
-            x_nuevo = x0 + i * h
-            # Predictor: Adams-Bashforth de 4 pasos
-            y_pred = ys[-1] + (h / 24) * (55 * fs[-1] - 59 * fs[-2]
-                                          + 37 * fs[-3] - 9 * fs[-4])
-            # Corrector: Adams-Moulton de 3 pasos
-            y_corr = ys[-1] + (h / 24) * (9 * self.f(x_nuevo, y_pred)
-                                          + 19 * fs[-1] - 5 * fs[-2] + fs[-3])
-            xs.append(x_nuevo)
-            ys.append(y_corr)
-            fs.append(self.f(x_nuevo, y_corr))
-            historial.append({'Iteración': i, 'x': x_nuevo, 'y_aprox': y_corr, 'h_usado': h})
-
+    def metodo_heun(self, x0, y0, xf, h):
+        x, y = x0, y0
+        historial = [{'Iteración': 0, 'x': x, 'y_aprox': y, 'h_usado': h}]
+        i = 0
+        while x < xf - 1e-12:
+            h_paso = min(h, xf - x)
+            k1 = self.f(x, y)
+            k2 = self.f(x + h_paso, y + h_paso * k1)
+            y = y + (h_paso / 2) * (k1 + k2)
+            x = x + h_paso
+            i += 1
+            historial.append({'Iteración': i, 'x': x, 'y_aprox': y, 'h_usado': h_paso})
         return self._construir_dataframe(historial)
 
     def runge_kutta_fehlberg(self, x0, y0, xf, tol, h_min, h_max):
