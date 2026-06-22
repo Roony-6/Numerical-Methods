@@ -45,6 +45,10 @@ class InterfaceHelper:
             inputs_necesarios['p1'] = c2.number_input("p1:", value=1.0)
             inputs_necesarios['p2'] = c3.number_input("p2:", value=2.0)
             return inputs_necesarios
+        elif metodo == "Neville":
+            c1 = st.columns(1)[0]
+            inputs_necesarios['x_target'] = c1.number_input("Valor x a interpolar:", value=0.5)
+            return inputs_necesarios
             
         
     # --- Metodos para visuales de de los metodos iterativos para encontrar raices ---"
@@ -80,4 +84,12 @@ class InterfaceHelper:
         st.header(f"{nombre}")
         st.caption(descripcion)
         st.divider()
+
+    @staticmethod
+    def mostrar_tabla_diferencias(tabla, x_values):
+        """Muestra la tabla de diferencias divididas de forma legible."""
+        if tabla is not None:
+            with st.expander("Ver tabla de diferencias divididas", expanded=True):
+                df_display = pd.DataFrame(tabla)
+                st.dataframe(df_display, use_container_width=True)
         
