@@ -76,3 +76,58 @@ class DerivacionNumerica:
 
         derivada = (y[i - 2] - 4 * y[i - 1] + 3 * y[i]) / (2 * h)
         return derivada, "3 Puntos Regresiva"
+
+    @staticmethod
+    def richardson(f, x, h_inicial, tol=1e-6, max_iter=20):
+        """
+        Calcula la derivada usando extrapolación de Richardson.
+
+        Args:
+            f: función a derivar
+            x: punto donde calcular la derivada
+            h_inicial: paso inicial para diferencias finitas
+            tol: tolerancia de error para convergencia
+            max_iter: máximo número de iteraciones
+
+        Returns:
+            (derivada_aproximada, tabla_richardson, historial, convergió)
+        """
+        historial = []
+
+        def diferencia_central(x, h):
+            return (f(x + h) - f(x - h)) / (2 * h)
+
+        # Inicializar tabla de Richardson
+        tabla_richardson = []
+
+        for i in range(max_iter):
+            h = h_inicial / (2 ** i)
+            # Primera columna: diferencias centrales
+            d0 = diferencia_central(x, h)
+            tabla_richardson.append([d0])
+
+            # Extrapolación de Richardson
+            for j in range(1, i + 1):
+                h_ratio = 2 ** (2 * j)
+                d_mejorada = (h_ratio * tabla_richardson[i][j - 1] -
+                             tabla_richardson[i - 1][j - 1]) / (h_ratio - 1)
+                tabla_richardson[i].append(d_mejorada)
+
+            # Verificar convergencia (usando elemento diagonal)
+            if i > 0:
+                error = abs(tabla_richardson[i][i] - tabla_richardson[i - 1][i - 1])
+                historial.append({
+                    'iteracion': i,
+                    'aproximacion': tabla_richardson[i][i],
+                    'h': h,
+                    'error': error
+                })
+
+                if error < tol:
+                    derivada_final = tabla_richardson[i][i]
+                    convergio = True
+                    return derivada_final, tabla_richardson, historial, convergio
+
+        derivada_final = tabla_richardson[max_iter - 1][max_iter - 1]
+        convergio = False
+        return derivada_final, tabla_richardson, historial, convergio
