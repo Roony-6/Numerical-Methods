@@ -1,69 +1,93 @@
 import streamlit as st
-import pandas as pd
-from src.metodos.raices import SolucionadorRaices 
+from src.metodos.raices import SolucionadorRaices
 from src.graficador import Graficador
 from src.interface import InterfaceHelper
 
-InterfaceHelper.encabezado_metodo("Solucion de ecuaciones no lineales","Encuentra raices y = 0 usando metodos iterativos")
+InterfaceHelper.encabezado_metodo(
+    "Solucion de ecuaciones no lineales",
+    "Encuentra raices y = 0 usando metodos iterativos"
+)
 
-# 1. Inputs Globales
+col1, col2 = st.columns([2, 1])
+with col1:
+    st.subheader("Parametros generales")
+with col2:
+    st.empty()
+
 col1, col2, col3 = st.columns(3)
 with col1:
-    funcion = st.text_input("Función f(x):", "x**2 - 4")
+    funcion = st.text_input("Funcion f(x):", value="x**2 - 4", placeholder="ej: x**2 - 4")
 with col2:
-    tol = st.number_input("Tolerancia", value=0.0001, format="%.6f")
+    tol = st.number_input("Tolerancia:", value=0.0001, format="%.6f")
 with col3:
-    max_iter = st.number_input("Iteraciones máx", value=50, step=1)
+    max_iter = st.number_input("Iteraciones max:", value=50, step=1)
 
-metodo = st.selectbox("Selecciona el método:", ["Bisección","Punto Fijo", "Falsa Posición", "Secante","Newton Raphson","Müller"])
+st.divider()
 
-# --- PARÁMETROS ESPECÍFICOS 
+col1, col2 = st.columns([2, 1])
+with col1:
+    metodo = st.selectbox(
+        "Metodo de solucion:",
+        ["Bisección", "Punto Fijo", "Falsa Posicion", "Secante", "Newton Raphson", "Müller"],
+        label_visibility="collapsed"
+    )
+with col2:
+    st.empty()
+
 inputs_metodo = InterfaceHelper.inputs_metodo(metodo)
 
-# --- BOTÓN DE CÁLCULO ---
-if st.button("Calcular"):
-    # Instanciamos
+col1, col2, col3 = st.columns([2, 1, 1])
+with col1:
+    st.empty()
+with col2:
+    st.empty()
+with col3:
+    btn_calc = st.button("Calcular", type="primary", use_container_width=True)
+
+if btn_calc:
     solucionador = SolucionadorRaices(funcion, tol=tol, max_iter=max_iter)
     resultado = None
-    
+
     if metodo == "Bisección":
         raiz, resultado = solucionador.biseccion(inputs_metodo['a'], inputs_metodo['b'])
     elif metodo == "Secante":
         raiz, resultado = solucionador.secante(inputs_metodo['x0'], inputs_metodo['x1'])
     elif metodo == "Punto Fijo":
-        raiz,resultado = solucionador.punto_fijo(inputs_metodo['g(x)'], inputs_metodo['p0'])
+        raiz, resultado = solucionador.punto_fijo(inputs_metodo['g(x)'], inputs_metodo['p0'])
     elif metodo == "Newton Raphson":
-        raiz,resultado = solucionador.newton_rapshon(inputs_metodo['p0'])
-    elif metodo == "Falsa Posición":
-        raiz, resultado = solucionador.falsa_posicion(inputs_metodo['a'],inputs_metodo['b'])
+        raiz, resultado = solucionador.newton_rapshon(inputs_metodo['p0'])
+    elif metodo == "Falsa Posicion":
+        raiz, resultado = solucionador.falsa_posicion(inputs_metodo['a'], inputs_metodo['b'])
     elif metodo == "Müller":
         raiz, resultado = solucionador.muller(inputs_metodo['p0'], inputs_metodo['p1'], inputs_metodo['p2'])
-    # Mostrar Resultados
+
     if resultado is not None:
-        
+        st.subheader("Resultados")
         InterfaceHelper.mostrar_metricas(solver=solucionador)
-        InterfaceHelper.mostrar_tabla_iteraciones(historial=resultado)
-        # Gráfica
-        grafica = Graficador(titulo=f"Análisis de {metodo}")
-        # Ajustamos el rango de la gráfica según los inputs para que se vea la raíz
-        # Solo valores numéricos: Punto Fijo incluye el string de g(x) en los inputs
-        valores_numericos = [v for v in inputs_metodo.values() if isinstance(v, (int, float))]
-        rango_a = min(valores_numericos) - 3
-        rango_b = max(valores_numericos) + 3
-        grafica.graficar_funcion(solucionador.f, rango_a, rango_b)
-        
-        # Extraemos los puntos x del historial para marcarlos (asumiendo que 'resultado' es una lista de dicts)
-        #puntos_x = [it['c'] for it in resultado] if 'c' in resultado[0] else []
-        puntos_x = [it['aprox'] for it in resultado] if 'aprox' in resultado[0] else []
-        # Müller puede producir aproximaciones complejas; graficamos solo la parte real
-        puntos_x = [p.real if isinstance(p, complex) else p for p in puntos_x]
-        puntos_y = [solucionador.f(x) for x in puntos_x]
-        grafica.marcar_puntos(puntos_x, puntos_y)
-        
-        st.pyplot(grafica.obtener_figura())
-        
-        #st.write("### Tabla de Iteraciones")
-        #st.dataframe(pd.DataFrame(resultado))
-        
-        
-        
+
+        col_tabla, col_grafica = st.columns(2)
+
+        with col_tabla:
+            st.subheader("Historial de iteraciones")
+            with st.container():
+                if resultado:
+                    import pandas as pd
+                    df = pd.DataFrame(resultado)
+                    df.index += 1
+                    st.dataframe(df, use_container_width=True, height=400)
+
+        with col_grafica:
+            st.subheader("Grafica")
+            grafica = Graficador(titulo=f"Analisis - {metodo}")
+
+            valores_numericos = [v for v in inputs_metodo.values() if isinstance(v, (int, float))]
+            rango_a = min(valores_numericos) - 3
+            rango_b = max(valores_numericos) + 3
+            grafica.graficar_funcion(solucionador.f, rango_a, rango_b)
+
+            puntos_x = [it['aprox'] for it in resultado] if 'aprox' in resultado[0] else []
+            puntos_x = [p.real if isinstance(p, complex) else p for p in puntos_x]
+            puntos_y = [solucionador.f(x) for x in puntos_x]
+            grafica.marcar_puntos(puntos_x, puntos_y)
+
+            st.pyplot(grafica.obtener_figura())
