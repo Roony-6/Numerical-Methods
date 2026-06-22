@@ -189,7 +189,7 @@ class SolucionadorRaices:
             self.mensaje = "No hay cambio de signo en el intervalo."
             return None, historial
 
-        c_prev = a # Inicializamos para el cálculo del error
+        c_prev = a
 
         for i in range(self.max_iter):
             # Evitar división por cero
@@ -209,7 +209,7 @@ class SolucionadorRaices:
                 "iteracion": i,
                 "a": a,
                 "b": b,
-                "c": c_actual, 
+                "c": c_actual,
                 "f(c)": fc,
                 "error": error,
                 "aprox": c_actual
@@ -230,7 +230,7 @@ class SolucionadorRaices:
                 a = c_actual
                 fa = fc
 
-            c_prev = c_actual # Guardamos el punto actual para calcular el error en la siguiente vuelta
+            c_prev = c_actual
 
         self.raiz = c_actual
         self.convergio = False
